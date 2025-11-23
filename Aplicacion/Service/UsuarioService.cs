@@ -21,7 +21,7 @@ namespace Aplicacion.Service
             _correos = correos;
         }
 
-        public void DeleteById(int ID)
+        public void DeleteById(int ID) 
         {
             var model = new UsuarioDTO();
             _repository.DeleteById(ID);

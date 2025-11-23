@@ -22,7 +22,7 @@ namespace Infraestructura.AutoMapper
             #region Mapeo de Inscripciones
             CreateMap<Inscripciones, InscripcionesDTO>();
             CreateMap<InscripcionesDTO, Inscripciones>();
-            #endregion
+            #endregion 
         }
     }
 }
