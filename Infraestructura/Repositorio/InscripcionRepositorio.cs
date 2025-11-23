@@ -20,7 +20,7 @@ namespace Infraestructura.Repositorio
         {
             _contexto.Database.ExecuteSqlRaw(
              "EXEC sp_AgregarInscripcion @p0, @p1, @p2",
-             inscripcion.IDCurso,
+             inscripcion.IDCurso, 
              inscripcion.IDUser,
              inscripcion.EmailUser
          );

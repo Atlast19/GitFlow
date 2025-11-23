@@ -24,7 +24,7 @@ namespace Infraestructura.Correos
         {
             using var mensaje = new MailMessage
             {
-                From = new MailAddress(_remitente, "Mi Aplicación"),
+                From = new MailAddress(_remitente, "Mi Aplicación"), 
                 Subject = asunto,
                 Body = cuerpo,
                 IsBodyHtml = esHtml
