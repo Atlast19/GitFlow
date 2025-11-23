@@ -16,7 +16,7 @@ namespace Aplicacion.Service
         private readonly ICorreos _correos;
         public InscripcionService(IMapper mapper, IRepository<Inscripciones> repository, IinscripcionRepositorio iinscripcion, ICorreos correos)
         {
-            _mapper = mapper;
+            _mapper = mapper; 
             _repository = repository;
             _inscripcionRepositorio = iinscripcion;
             _correos = correos;

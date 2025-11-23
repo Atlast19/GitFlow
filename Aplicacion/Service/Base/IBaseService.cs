@@ -11,7 +11,7 @@ namespace Aplicacion.Service.Base
         T GetRegistrosByID(int ID);
 
         void DeleteById(int ID);
-
+         
         void PutRegistros(T model);
     }
 }
