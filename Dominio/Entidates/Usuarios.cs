@@ -13,6 +13,6 @@ namespace Dominio.Entidates
         public string PasswordUser { get; set; }
         public string MatriculaUser { get; set; }
         public DateOnly AgeUser { get; set; }
-        public string EmailUser { get; set; }
+        public string EmailUser { get; set; } 
     }
 }
