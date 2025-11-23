@@ -21,7 +21,7 @@ namespace Infraestructura.Repositorio
                 _dbSet.Remove(Code);
                 _contexto.SaveChanges();
         }
-
+         
         public IEnumerable<T> GetAllRegistros()
         {
                 return _dbSet.ToList();

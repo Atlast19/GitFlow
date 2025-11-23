@@ -19,7 +19,7 @@ namespace Infraestructura.Persistencia.Contexto
             modelBuilder.Entity<Inscripciones>()
                 .ToTable(tb => tb.UseSqlOutputClause(false));
 
-            modelBuilder.Entity<Reservas>()
+            modelBuilder.Entity<Reservas>() 
                 .Property(p => p.Estado)
                 .ValueGeneratedOnAddOrUpdate()
                 .Metadata.SetAfterSaveBehavior(Microsoft.EntityFrameworkCore.Metadata.PropertySaveBehavior.Ignore);
