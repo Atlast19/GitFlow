@@ -20,7 +20,7 @@ namespace Aplicacion.Service
 
         public void DeleteById(int ID)
         {
-            _repository.DeleteById(ID);
+            _repository.DeleteById(ID); 
         }
 
         public IEnumerable<ReservasDTO> GetAllRegistros()
