@@ -9,6 +9,6 @@ namespace Dominio.Entidates
         public int IDInscripcion { get; set; }
         public int IDCurso { get; set; }
         public int IDUser { get; set; }
-        public string EmailUser { get; set; }
+        public string EmailUser { get; set; } 
     }
 }
