@@ -6,7 +6,7 @@ namespace Aplicacion.Interface
     {
         IEnumerable<T> GetAllRegistros();
 
-        void PostRegistros(T model);
+        void PostRegistros(T model); 
 
         T GetRegistrosByID(int ID);
 

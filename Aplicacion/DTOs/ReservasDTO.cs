@@ -10,7 +10,7 @@ namespace Aplicacion.DTOs
         public string Turno { get; set; }
         public TimeOnly HorasInicioCurso { get; set; }
         public TimeOnly HoraFinalCurso { get; set; }
-        public int EspaciosDisponibles { get; set; }
+        public int EspaciosDisponibles { get; set; } 
         public DateOnly FechaFin { get; set; }
         public TimeOnly HoraFin { get; set; }
         public bool Estado { get; set; }
