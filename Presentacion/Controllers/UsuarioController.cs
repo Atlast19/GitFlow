@@ -25,7 +25,7 @@ namespace Presentacion.Controllers
                 var list = _service.GetAllRegistros().ToList();
                 return Ok(list);
             }
-            catch (Exception ex) 
+            catch (Exception ex)  
             {
                 return BadRequest(new {Error = ex.Message});
             }

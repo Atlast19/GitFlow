@@ -29,7 +29,7 @@ namespace Presentacion
                 {
                     builder.AllowAnyOrigin()
                            .AllowAnyMethod()
-                           .AllowAnyHeader();
+                           .AllowAnyHeader(); 
                 });
             });
 
