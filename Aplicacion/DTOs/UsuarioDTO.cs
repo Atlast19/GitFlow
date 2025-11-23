@@ -9,6 +9,6 @@ namespace Aplicacion.DTOs
         public DateOnly AgeUser { get; set; }
         public string MatriculaUser { get; set; }
         public string EmailUser { get; set; }
-        public string PasswordUser { get; set; }
+        public string PasswordUser { get; set; } // Error con la contraseña 
     }
 }
