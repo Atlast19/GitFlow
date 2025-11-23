@@ -22,7 +22,7 @@ namespace Presentacion.Controllers
             try
             {
                 var registros =_service.GetAllRegistros();
-                return Ok(registros);
+                return Ok(registros); 
             }
             catch (Exception ex)
             {
