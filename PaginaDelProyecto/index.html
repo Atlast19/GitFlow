@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cursos Generales</title>
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+    <div class="card shadow-lg">
+        <div class="card-body">
+            <!-- Tabs -->
+            <ul class="nav nav-tabs mb-3" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#loginTab" type="button" role="tab">Iniciar Sesión</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="register-tab" data-bs-toggle="tab" data-bs-target="#registerTab" type="button" role="tab">Registrarse</button>
+                </li>
+            </ul>
+
+            <div class="tab-content" id="myTabContent">
+                <!-- LOGIN -->
+                <div class="tab-pane fade show active" id="loginTab" role="tabpanel">
+                    <h3 class="text-center mb-4">Iniciar Sesión</h3>
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="loginName" placeholder="Usuario">
+                    </div>
+                    <div class="mb-3">
+                        <input type="password" class="form-control" id="loginPass" placeholder="Contraseña">
+                    </div>
+                    <button class="btn btn-primary w-100" onclick="login()">Ingresar</button>
+                </div>
+
+                <!-- REGISTRO -->
+                <div class="tab-pane fade" id="registerTab" role="tabpanel">
+                    <h3 class="text-center mb-4">Registrarse</h3>
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="regName" placeholder="Usuario">
+                    </div>
+                    <div class="mb-3">
+                        <label for="regBirthdate" class="form-label">Fecha de Nacimiento</label>
+                        <input type="date" class="form-control" id="regBirthdate" max="<?= date('Y-m-d') ?>">
+                    </div>
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="regMatricula" placeholder="Matrícula">
+                    </div>
+                    <div class="mb-3">
+                        <input type="email" class="form-control" id="regEmail" placeholder="Correo">
+                    </div>
+                    <div class="mb-3">
+                        <input type="password" class="form-control" id="regPass" placeholder="Contraseña">
+                    </div>
+                    <button class="btn btn-success w-100" onclick="registrar()">Registrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    const apiGet = 'https://localhost:7261/api/Usuarios/GetAll';
+    const apiPost = 'https://localhost:7261/api/Usuarios';
+
+    // LOGIN
+    function login() {
+        let nameUser = document.getElementById("loginName").value.trim();
+        let passwordUser = document.getElementById("loginPass").value.trim();
+
+        fetch(apiGet)
+        .then(response => response.json())
+        .then(data => {
+            // Buscar usuario que coincida
+            let usuario = data.find(u => u.nameUser === nameUser && u.passwordUser === passwordUser);
+
+            if (usuario) {
+                // 🔹 Guardar usuario activo en sessionStorage
+                sessionStorage.setItem("usuarioActivo", JSON.stringify(usuario));
+
+                // 🔹 Identificar si es admin
+                if (usuario.idUser === 1) {
+                    window.location.href = "admin.html";
+                } else {
+                    window.location.href = "usuario.html";
+                }
+            } else {
+                alert("Usuario o contraseña incorrectos");
+            }
+        })
+        .catch(error => console.log(error));
+    }
+
+    // REGISTRO
+    function registrar() {
+        let fechaOriginal = document.getElementById("regBirthdate").value; // YYYY-MM-DD
+
+        let nuevoUsuario = {
+            idUser: 0,
+            nameUser: document.getElementById("regName").value.trim(),
+            AgeUser: fechaOriginal,
+            matriculaUser: document.getElementById("regMatricula").value.trim(),
+            emailUser: document.getElementById("regEmail").value.trim(),
+            passwordUser: document.getElementById("regPass").value.trim()
+        };
+
+        fetch(apiPost, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(nuevoUsuario)
+        })
+        .then(response => response.json()) // 🔹 Esperar al JSON devuelto por la API
+        .then(usuarioCreado => {
+            if (!usuarioCreado.idUser) throw new Error("No se devolvió ID del usuario");
+
+            // 🔹 Guardar usuario registrado en sessionStorage
+            sessionStorage.setItem("usuarioActivo", JSON.stringify(usuarioCreado));
+
+            alert("Usuario registrado con éxito");
+
+            // 🔹 Redirigir al panel de usuario
+            window.location.href = "usuario.html";
+
+            limpiarCamposRegistro();
+        })
+        .catch(error => {
+            console.error("Error al registrar usuario:", error);
+            alert("Error al registrar el usuario");
+            limpiarCamposRegistro();
+        });
+    }
+
+    // Limpiar campos del formulario de registro
+    function limpiarCamposRegistro() {
+        document.getElementById("regName").value = "";
+        document.getElementById("regBirthdate").value = "";
+        document.getElementById("regMatricula").value = "";
+        document.getElementById("regEmail").value = "";
+        document.getElementById("regPass").value = "";
+    }
+</script>
+
+</body>
+</html>

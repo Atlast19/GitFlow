@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Panel Admin</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <style>
+    body { background-color: #f8f9fa; color: #212529; }
+    .section { display: none; }
+    .nav-link.active { background-color: #0d6efd !important; color: #fff !important; border-radius: 5px; }
+    .table th, .table td { vertical-align: middle; }
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold text-primary" href="#">Panel Admin</a>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item"><a class="nav-link active" href="#" onclick="showSection(event,'usuarios')">Usuarios</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" onclick="showSection(event,'cursos')">Cursos</a></li>
+       <li class="nav-item"><a class="nav-link" href="#" onclick="showSection(event,'inscripciones')">Inscripciones</a>
+        <li class="nav-item"><a class="nav-link text-warning" href="index.html">Salir</a>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container mt-4">
+
+    <!-- Inscripciones -->
+<!-- Inscripciones -->
+<div id="inscripciones" class="section">
+  <h3 class="mb-3">Gestión de Inscripciones</h3>
+
+  <!-- Formulario para editar -->
+  <form id="formInscripcion" class="mb-4">
+    <input type="hidden" id="idInscripcionEdit" value="0">
+    <div class="row g-3">
+      <div class="col-md-3"><input type="number" id="idCurso" class="form-control" placeholder="ID Curso"></div>
+      <div class="col-md-3"><input type="number" id="idUser" class="form-control" placeholder="ID Usuario" disabled></div>
+      <div class="col-md-3"><input type="email" id="emailUserIns" class="form-control" placeholder="Email Usuario"></div>
+      <div class="col-md-3 d-grid gap-2">
+        <button type="button" id="btnInscripcion" class="btn btn-primary">Actualizar</button>
+        <button type="button" id="btnInscripcionCancelar" class="btn btn-outline-secondary" style="display:none;">Cancelar</button>
+      </div>
+    </div>
+  </form>
+
+  <!-- Tabla -->
+  <table class="table table-bordered table-striped shadow-sm">
+    <thead class="table-info">
+      <tr>
+        <th>ID</th>
+        <th>ID Curso</th>
+        <th>ID Usuario</th>
+        <th>Email Usuario</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody id="inscripcionesTable"></tbody>
+  </table>
+</div>
+    
+  <!-- Usuarios -->
+  <div id="usuarios" class="section" style="display:block;">
+    <h3 class="mb-3">Gestión de Usuarios</h3>
+    <form id="formUsuario" class="mb-4">
+      <input type="hidden" id="idUserEdit" value="0">
+      <div class="row g-3">
+        <div class="col-md-4"><input type="text" id="nameUser" class="form-control" placeholder="Nombre"></div>
+        <div class="col-md-4"><input type="date" id="ageUser" class="form-control"></div>
+        <div class="col-md-4"><input type="text" id="matriculaUser" class="form-control" placeholder="Matrícula"></div>
+        <div class="col-md-4"><input type="email" id="emailUser" class="form-control" placeholder="Correo"></div>
+        <div class="col-md-4"><input type="password" id="passwordUser" class="form-control" placeholder="Contraseña"></div>
+        <div class="col-md-4 d-grid gap-2">
+          <button type="button" id="btnUsuario" class="btn btn-primary">Registrar</button>
+          <button type="button" id="btnUsuarioCancelar" class="btn btn-outline-secondary" style="display:none;">Cancelar</button>
+        </div>
+      </div>
+    </form>
+    <table class="table table-bordered table-striped shadow-sm">
+      <thead class="table-primary">
+        <tr>
+          <th>ID</th><th>Nombre</th><th>Fecha Nac.</th><th>Matrícula</th><th>Correo</th><th>Contraseña</th><th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="usuariosTable"></tbody>
+    </table>
+  </div>
+
+<!-- Cursos -->
+<div id="cursos" class="section">
+  <h3 class="mb-3">Gestión de Cursos</h3>
+  <form id="formCurso" class="mb-4">
+    <input type="hidden" id="idCursoEdit" value="0">
+    <div class="row g-3">
+      <div class="col-md-4"><input type="text" id="nombreMaestro" class="form-control" placeholder="Nombre Maestro"></div>
+      <div class="col-md-4"><input type="text" id="nombreMateria" class="form-control" placeholder="Materia"></div>
+
+      <!-- Turno (select) -->
+      <div class="col-md-4">
+        <select id="turno" class="form-select">
+          <option value="Matutino">Matutino</option>
+          <option value="Vespertino">Vespertino</option>
+        </select>
+      </div>
+
+      <!-- Horas (24h) -->
+      <div class="col-md-4"><input type="time" id="horasInicioCurso" class="form-control" step="1">Hora de inicio del curso</div>
+      <div class="col-md-4"><input type="time" id="horaFinalCurso" class="form-control" step="1">Hora de fin del Curso </div>
+
+      <!-- NUEVOS CAMPOS -->
+      <div class="col-md-4"><input type="date" id="fechaFinCurso" class="form-control" >Fecha Final de la Reserva</div>
+      <div class="col-md-4"><input type="time" id="horaFinCurso" class="form-control" step="1" >Hora Final de la Reserva</div>
+
+      <div class="col-md-4"><input type="number" id="espaciosDisponibles" class="form-control" placeholder="Espacios Disponibles"></div>
+      <div class="col-md-4">
+        <select id="estado" class="form-select" disabled>
+          <option value="true">Activo</option>
+        </select>
+      </div>
+
+      <div class="col-md-4 d-grid gap-2">
+        <button type="button" id="btnCurso" class="btn btn-primary">Registrar</button>
+        <button type="button" id="btnCursoCancelar" class="btn btn-outline-secondary" style="display:none;">Cancelar</button>
+      </div>
+    </div>
+  </form>
+
+  <table class="table table-bordered table-striped shadow-sm">
+    <thead class="table-success">
+      <tr>
+        <th>ID</th><th>Maestro</th><th>Materia</th><th>Turno</th>
+        <th>Hora Inicio</th><th>Hora Fin</th><th>Fecha Fin</th><th>Hora Fin Curso</th>
+        <th>Espacios</th><th>Estado</th><th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody id="cursosTable"></tbody>
+  </table>
+</div>
+  <div id="alerts"></div>
+</div>
+
+<script>
+  // ======= Config API =======
+  const apiUsuariosGet    = 'https://localhost:7261/api/Usuarios/GetAll';
+  const apiUsuariosPost   = 'https://localhost:7261/api/Usuarios';
+  const apiUsuariosPut    = 'https://localhost:7261/api/Usuarios/Update';
+  const apiUsuariosDelete = 'https://localhost:7261/api/Usuarios/Delete?ID=';
+
+  const apiCursosGet      = 'https://localhost:7261/api/Reservas/GetAll';
+  const apiCursosPost     = 'https://localhost:7261/api/Reservas';
+  const apiCursosPut      = 'https://localhost:7261/api/Reservas/Put';
+  const apiCursosDelete   = 'https://localhost:7261/api/Reservas/Delete?ID=';
+
+  const apiInscripcionesGet = 'https://localhost:7261/api/Inscripcoines/GetAll';
+  const apiInscripcionesPut    = 'https://localhost:7261/api/Inscripcoines/Put';
+  const apiInscripcionesDelete = 'https://localhost:7261/api/Inscripcoines/Delete?ID=';
+
+  // ======= Util =======
+  const esc = (s) => String(s ?? '')
+    .replaceAll('&','&amp;').replaceAll('<','&lt;')
+    .replaceAll('>','&gt;').replaceAll('"','&quot;')
+    .replaceAll("'","&#39;");
+
+  const showAlert = (msg, type='success') => {
+    const host = document.getElementById('alerts');
+    host.innerHTML = `
+      <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+        ${esc(msg)}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>`;
+    setTimeout(()=>{ host.innerHTML=''; }, 3500);
+  };
+
+  // Helpers para tiempo: convierte "HH:MM" o "HH:MM:SS" -> "HH:MM:SS"
+  function formatTimeForApi(val) {
+    if (!val) return null;
+    if (val.length === 5) return val + ':00';
+    if (val.length >= 8) return val.substring(0,8);
+    return val;
+  }
+  // Formatea valor de la API para mostrar en input time (acepta HH:MM:SS o HH:MM)
+  function formatTimeForInput(val) {
+    if (!val) return '';
+    if (val.length >= 8) return val.substring(0,8);
+    return val;
+  }
+
+  // ======= Estado en memoria =======
+  let usuariosCache = [];
+  let cursosCache = [];
+  let inscripcionesCache = [];
+
+  // ======= Navegación =======
+  function showSection(ev, id) {
+    ev?.preventDefault();
+    document.querySelectorAll('.section').forEach(sec => sec.style.display = 'none');
+    document.getElementById(id).style.display = 'block';
+    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+    ev?.target?.classList?.add('active');
+    if (id === 'usuarios') cargarUsuarios();
+    if (id === 'cursos')   cargarCursos();
+  }
+
+
+
+  // ======= Inscripcion =======
+
+  async function cargarInscripciones() {
+  try {
+    const r = await fetch(apiInscripcionesGet);
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const data = await r.json();
+    inscripcionesCache = data || [];
+    const tbody = document.getElementById('inscripcionesTable');
+    tbody.innerHTML = inscripcionesCache.map(i => `
+      <tr>
+        <td>${esc(i.idInscripcion)}</td>
+        <td>${esc(i.idCurso)}</td>
+        <td>${esc(i.idUser)}</td>
+        <td>${esc(i.emailUser)}</td>
+        <td class="text-nowrap">
+          <button type="button" class="btn btn-warning btn-sm btn-edit-inscripcion" data-id="${esc(i.idInscripcion)}">Editar</button>
+          <button type="button" class="btn btn-danger btn-sm btn-delete-inscripcion" data-id="${esc(i.idInscripcion)}">Eliminar</button>
+        </td>
+      </tr>`).join('');
+  } catch (err) {
+    console.error('Error cargarInscripciones:', err);
+    showAlert('No se pudieron cargar inscripciones: ' + err.message, 'danger');
+  }
+}
+
+// Resetear formulario
+function resetInscripcionForm() {
+  document.getElementById('formInscripcion').reset();
+  document.getElementById('idInscripcionEdit').value = 0;
+  document.getElementById('btnInscripcion').textContent = 'Actualizar';
+  document.getElementById('btnInscripcionCancelar').style.display = 'none';
+}
+
+// Delegación de eventos (Editar/Eliminar)
+document.getElementById('inscripcionesTable').addEventListener('click', async (e) => {
+  const btn = e.target.closest('button');
+  if (!btn) return;
+  const id = Number(btn.dataset.id);
+
+  // Editar
+  if (btn.classList.contains('btn-edit-inscripcion')) {
+    const ins = inscripcionesCache.find(x => Number(x.idInscripcion) === id);
+    if (!ins) return;
+    document.getElementById('idInscripcionEdit').value = ins.idInscripcion;
+    document.getElementById('idCurso').value = ins.idCurso ?? '';
+    document.getElementById('idUser').value = ins.idUser ?? '';
+    document.getElementById('emailUserIns').value = ins.emailUser ?? '';
+    document.getElementById('btnInscripcion').textContent = 'Guardar';
+    document.getElementById('btnInscripcionCancelar').style.display = 'block';
+  }
+
+  // Eliminar
+  if (btn.classList.contains('btn-delete-inscripcion')) {
+    if (!confirm(`¿Eliminar inscripción ${id}?`)) return;
+    try {
+      const r = await fetch(apiInscripcionesDelete + id, { method: 'DELETE' });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      showAlert('Inscripción eliminada');
+      cargarInscripciones();
+    } catch (err) {
+      console.error('delete inscripcion:', err);
+      showAlert('No se pudo eliminar la inscripción', 'danger');
+    }
+  }
+});
+
+// Guardar cambios (PUT)
+document.getElementById('btnInscripcion').addEventListener('click', async () => {
+  const idEdit = Number(document.getElementById('idInscripcionEdit').value || 0);
+  if (idEdit === 0) {
+    showAlert('Solo se permite actualizar inscripciones existentes', 'warning');
+    return;
+  }
+  const payload = {
+    idInscripcion: idEdit,
+    idCurso: Number(document.getElementById('idCurso').value || 0),
+    idUser: Number(document.getElementById('idUser').value || 0),
+    emailUser: document.getElementById('emailUserIns').value.trim()
+  };
+  try {
+    const r = await fetch(apiInscripcionesPut, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    resetInscripcionForm();
+    cargarInscripciones();
+    showAlert('Inscripción actualizada');
+  } catch (err) {
+    console.error('save inscripcion:', err);
+    showAlert('No se pudo actualizar la inscripción', 'danger');
+  }
+});
+
+document.getElementById('btnInscripcionCancelar').addEventListener('click', resetInscripcionForm);
+
+
+
+
+  // ======= Usuarios =======
+  async function cargarUsuarios() {
+    try {
+      const r = await fetch(apiUsuariosGet);
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      const data = await r.json();
+      // filtro igual que antes (si quieres quitarlo, elimina .filter)
+      usuariosCache = (data || []).filter(u => Number(u.idUser) >= 2);
+      const tbody = document.getElementById('usuariosTable');
+      tbody.innerHTML = usuariosCache.map(u => `
+        <tr>
+          <td>${esc(u.idUser)}</td>
+          <td>${esc(u.nameUser)}</td>
+          <td>${esc(u.ageUser)}</td>
+          <td>${esc(u.matriculaUser)}</td>
+          <td>${esc(u.emailUser)}</td>
+          <td>${esc(u.passwordUser)}</td>
+          <td class="text-nowrap">
+            <button type="button" class="btn btn-warning btn-sm btn-edit-usuario" data-id="${esc(u.idUser)}">Editar</button>
+            <button type="button" class="btn btn-danger btn-sm btn-delete-usuario" data-id="${esc(u.idUser)}">Eliminar</button>
+          </td>
+        </tr>`).join('');
+    } catch (err) {
+      console.error('Error cargarUsuarios:', err);
+      showAlert('No se pudieron cargar usuarios: ' + err.message, 'danger');
+    }
+  }
+
+  function resetUsuarioForm() {
+    document.getElementById('formUsuario').reset();
+    document.getElementById('idUserEdit').value = 0;
+    document.getElementById('btnUsuario').textContent = 'Registrar';
+    document.getElementById('btnUsuarioCancelar').style.display = 'none';
+  }
+
+  // Delegación de eventos Usuarios
+  document.getElementById('usuariosTable').addEventListener('click', async (e) => {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    const id = Number(btn.dataset.id);
+    if (btn.classList.contains('btn-edit-usuario')) {
+      const u = usuariosCache.find(x => Number(x.idUser) === id);
+      if (!u) return;
+      document.getElementById('idUserEdit').value = u.idUser;
+      document.getElementById('nameUser').value = u.nameUser ?? '';
+      document.getElementById('ageUser').value = (u.ageUser ?? '').toString().substring(0,10);
+      document.getElementById('matriculaUser').value = u.matriculaUser ?? '';
+      document.getElementById('emailUser').value = u.emailUser ?? '';
+      document.getElementById('passwordUser').value = u.passwordUser ?? '';
+      document.getElementById('btnUsuario').textContent = 'Actualizar';
+      document.getElementById('btnUsuarioCancelar').style.display = 'block';
+    }
+    if (btn.classList.contains('btn-delete-usuario')) {
+      if (!confirm(`¿Eliminar usuario ${id}?`)) return;
+      try {
+        const r = await fetch(apiUsuariosDelete + id, { method: 'DELETE' });
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        showAlert('Usuario eliminado');
+        cargarUsuarios();
+      } catch (err) {
+        console.error('delete usuario:', err);
+        showAlert('No se pudo eliminar el usuario', 'danger');
+      }
+    }
+  });
+
+  document.getElementById('btnUsuario').addEventListener('click', async () => {
+    const idEdit = Number(document.getElementById('idUserEdit').value || 0);
+    const payload = {
+      idUser: idEdit,
+      nameUser: document.getElementById('nameUser').value.trim(),
+      ageUser: document.getElementById('ageUser').value,
+      matriculaUser: document.getElementById('matriculaUser').value.trim(),
+      emailUser: document.getElementById('emailUser').value.trim(),
+      passwordUser: document.getElementById('passwordUser').value.trim()
+    };
+    const url = idEdit === 0 ? apiUsuariosPost : apiUsuariosPut;
+    const method = idEdit === 0 ? 'POST' : 'PUT';
+    try {
+      const r = await fetch(url, { method, headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      resetUsuarioForm();
+      cargarUsuarios();
+      showAlert(idEdit===0?'Usuario registrado':'Usuario actualizado');
+    } catch (err) {
+      console.error('save usuario:', err);
+      showAlert('No se pudo guardar el usuario', 'danger');
+    }
+  });
+
+  document.getElementById('btnUsuarioCancelar').addEventListener('click', resetUsuarioForm);
+
+  // ======= Cursos =======
+ async function cargarCursos() {
+  try {
+    const r = await fetch(apiCursosGet);
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const data = await r.json();
+    cursosCache = data || [];
+    const tbody = document.getElementById('cursosTable');
+    tbody.innerHTML = cursosCache.map(c => `
+      <tr>
+        <td>${esc(c.idCurso)}</td>
+        <td>${esc(c.nombreMaestro)}</td>
+        <td>${esc(c.nombreMateria)}</td>
+        <td>${esc(c.turno)}</td>
+        <td>${esc(c.horasInicioCurso)}</td>
+        <td>${esc(c.horaFinalCurso)}</td>
+        <td>${esc(c.fechaFin ?? '')}</td>
+        <td>${esc(c.horaFin ?? '')}</td>
+        <td>${esc(c.espaciosDisponibles)}</td>
+        <td>${c.estado ? '<span class="badge text-bg-success">Activo</span>' : '<span class="badge text-bg-secondary">Inactivo</span>'}</td>
+        <td class="text-nowrap">
+          <button type="button" class="btn btn-warning btn-sm btn-edit-curso" data-id="${esc(c.idCurso)}">Editar</button>
+          <button type="button" class="btn btn-danger btn-sm btn-delete-curso" data-id="${esc(c.idCurso)}">Eliminar</button>
+        </td>
+      </tr>`).join('');
+  } catch (err) {
+    console.error('Error cargarCursos:', err);
+    showAlert('No se pudieron cargar cursos: ' + err.message, 'danger');
+  }
+}
+
+function resetCursoForm() {
+  document.getElementById('formCurso').reset();
+  document.getElementById('idCursoEdit').value = 0;
+  document.getElementById('estado').value = 'true';
+  document.getElementById('turno').value = 'Matutino';
+  document.getElementById('btnCurso').textContent = 'Registrar';
+  document.getElementById('btnCursoCancelar').style.display = 'none';
+  document.getElementById('fechaFinCurso').value = '';
+  document.getElementById('horaFinCurso').value = '';
+}
+
+// Delegación de eventos Cursos
+document.getElementById('cursosTable').addEventListener('click', async (e) => {
+  const btn = e.target.closest('button');
+  if (!btn) return;
+  const id = Number(btn.dataset.id);
+  if (btn.classList.contains('btn-edit-curso')) {
+    const c = cursosCache.find(x => Number(x.idCurso) === id);
+    if (!c) return;
+    document.getElementById('idCursoEdit').value = c.idCurso;
+    document.getElementById('nombreMaestro').value = c.nombreMaestro ?? '';
+    document.getElementById('nombreMateria').value = c.nombreMateria ?? '';
+    document.getElementById('turno').value = c.turno ?? 'Matutino';
+    document.getElementById('horasInicioCurso').value = formatTimeForInput(c.horasInicioCurso);
+    document.getElementById('horaFinalCurso').value = formatTimeForInput(c.horaFinalCurso);
+    document.getElementById('fechaFinCurso').value = (c.fechaFin ?? '').substring(0,10);
+    document.getElementById('horaFinCurso').value = formatTimeForInput(c.horaFin ?? '');
+    document.getElementById('espaciosDisponibles').value = c.espaciosDisponibles ?? 0;
+    document.getElementById('estado').value = (c.estado ? 'true' : 'false');
+    document.getElementById('btnCurso').textContent = 'Actualizar';
+    document.getElementById('btnCursoCancelar').style.display = 'block';
+  }
+  if (btn.classList.contains('btn-delete-curso')) {
+    if (!confirm(`¿Eliminar curso ${id}?`)) return;
+    try {
+      const r = await fetch(apiCursosDelete + id, { method: 'DELETE' });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      showAlert('Curso eliminado');
+      cargarCursos();
+    } catch (err) {
+      console.error('delete curso:', err);
+      showAlert('No se pudo eliminar el curso', 'danger');
+    }
+  }
+});
+
+document.getElementById('btnCurso').addEventListener('click', async () => {
+  const idEdit = Number(document.getElementById('idCursoEdit').value || 0);
+  const payload = {
+    idCurso: idEdit,
+    nombreMaestro: document.getElementById('nombreMaestro').value.trim(),
+    nombreMateria: document.getElementById('nombreMateria').value.trim(),
+    turno: document.getElementById('turno').value,
+    horasInicioCurso: formatTimeForApi(document.getElementById('horasInicioCurso').value),
+    horaFinalCurso: formatTimeForApi(document.getElementById('horaFinalCurso').value),
+    fechaFin: document.getElementById('fechaFinCurso').value,
+    horaFin: formatTimeForApi(document.getElementById('horaFinCurso').value),
+    espaciosDisponibles: parseInt(document.getElementById('espaciosDisponibles').value || '0', 10),
+    estado: document.getElementById('estado').value === 'true'
+  };
+  const url = idEdit === 0 ? apiCursosPost : apiCursosPut;
+  const method = idEdit === 0 ? 'POST' : 'PUT';
+  try {
+    const r = await fetch(url, { method, headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    resetCursoForm();
+    cargarCursos();
+    showAlert(idEdit===0?'Curso registrado':'Curso actualizado');
+  } catch (err) {
+    console.error('save curso:', err);
+    showAlert('No se pudo guardar el curso', 'danger');
+  }
+});
+
+document.getElementById('btnCursoCancelar').addEventListener('click', resetCursoForm);
+
+  // ======= Inicial =======
+  // Llamamos ambos para asegurarnos que se carguen tanto usuarios como cursos al iniciar.
+  // Si tu API necesita autenticación o tarda, los mensajes de error te ayudarán a depurar.
+  cargarUsuarios();
+  cargarCursos();
+  cargarInscripciones();
+</script>
+
+</body>
+</html>
